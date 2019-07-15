@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="1.0" elementFormDefault="qualified">
+    <!-- Balise adresse -->
+    <xsd:element name="adresse">
+        <xsd:complexType>
+            <xsd:all>
+                <xsd:element name="étage" type="xsd:nonNegativeInteger" minOccurs="0"/>
+                <xsd:element name="numéro" type="xsd:nonNegativeInteger" minOccurs="0"/>
+                <xsd:element name="rue" type="xsd:token" minOccurs="0"/>
+                <xsd:element name="ville" type="xsd:token"/>
+                <xsd:element name="codePostal">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:nonNegativeInteger">
+                            <xsd:totalDigits value="5"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+            </xsd:all>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <!-- Balise infirmier -->
+    <xsd:element name="infirmier">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="nom" type="xsd:token"/>
+                <xsd:element name="prénom" type="xsd:token"/>
+                <xsd:element name="photo" type="xsd:anyURI"/>
+            </xsd:sequence>
+            <xsd:attribute name="id" type="xsd:token" use="required"/>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <!-- Balise acte -->
+    <xsd:element name="acte">
+        <xsd:complexType>
+            <xsd:simpleContent>
+                <xsd:extension base="xsd:double">
+                    <xsd:attribute name="id" type="xsd:token" use="required"/>
+                </xsd:extension>
+            </xsd:simpleContent>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <!-- Balise visite -->
+    <xsd:element name="visite">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="acte" maxOccurs="unbounded"/>
+            </xsd:sequence>
+            <xsd:attribute name="date" type="xsd:date" use="required"/>
+            <xsd:attribute name="intervenant" type="xsd:token" use="optional"/>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <!-- Balise patient -->
+    <xsd:element name="patient">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="nom" type="xsd:token"/>
+                <xsd:element name="prénom" type="xsd:token"/>
+                <xsd:element name="sexe">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:token">
+                            <xsd:enumeration value="M"/>
+                            <xsd:enumeration value="F"/>
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element name="naissance" type="xsd:date"/>
+                <xsd:element name="numéro">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:token">
+                            <xsd:pattern value="(1|2|3|4|7|8){1}[0-9]{2}(0[1-9]|1[0-2]|62|63)(0[1-9]|1[0-9]|2[1-9]|[3-8][0-9]|9[0-9]|2A|2B)(00[1-9]|0[1-9][0-9]|[1-8][0-9][0-9]|9[0-8][0-9]|990)(00[1-9]|0[1-9][0-9]|[1-9][0-9][0-9])(0[1-9]|10|[1-9][0-7])"/>  
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:element>
+                <xsd:element ref="adresse">
+                </xsd:element>
+                <xsd:element ref="visite"/> 
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <!-- Balise cabinet -->
+    <xsd:element name="cabinet">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="nom" type="xsd:string"/>
+                <xsd:element ref="adresse"/>
+                <xsd:element name="infirmiers">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element ref="infirmier" maxOccurs="unbounded"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="patients">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element ref="patient" maxOccurs="unbounded" minOccurs="0"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <!-- Balise root "Schema"-->
+    <xsd:element name="root">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="cabinet"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
